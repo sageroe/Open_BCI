@@ -22,21 +22,35 @@ def main():
     screen = pygame.display.set_mode((640,480))
     running = True
     clock = pygame.time.Clock()
-    _songs_1 = ['avengers']
+    #lista muzyki do plakatu avengersów
+    _songs_avengers = ['avengers']
 
+    _currently_playing_song = None
+    #ustalamy zdarzenie które ma zakończyć granie muzyki
     SONG_END = pygame.USEREVENT + 1
+
     pygame.mixer.music.set_endevent(SONG_END)
     pygame.mixer.music.load('avengers.mp3')
-    pygame.mixer.music.play()
+
+    START = False
 
     while running:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            #poniższy kod wykona się kiedy wciśniemy SPACE
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                     pygame.mixer.music.play()
+                     START = True
+            #kod poniżej wykona się kiedy dojdzie do zakończenia odtwarzania dźwięku
             if event.type == SONG_END:
                 print("songs end has come")
-        screen.fill((255,255,255))
-        screen.blit(get_image('avengers.jpg'),(100,30))
+            #wypełniamy okno kolorami i obrazkami poniżej                
+            screen.fill((255,255,255))
+            if START:
+                screen.blit(get_image('avengers.jpg'),(100,30))
+
         pygame.display.flip()
 if __name__=="__main__":
     main()
