@@ -5,8 +5,15 @@ Created on Wed Jan  8 17:51:20 2020
 @author: Sagerran
 """
 
+####Ważne !!! Wymiary obrazka muszą być 300x400
+###Początek wymiaru plakatu 231x145
+###Prawy górny 725x92
+###Środkowy prawy 725x255
+###Dolny prawy 725x410
+### Tytuł 250x58
 import pygame
 import os
+pygame.init() ###Przenioslem bo powinno się tutaj znajdować
 
 _image_library = {}
 def get_image(path):
@@ -21,8 +28,15 @@ def get_image(path):
 
 def main():
 
-    pygame.init()
-    screen = pygame.display.set_mode((640,480))
+    screen = pygame.display.set_mode((1000,640))
+    ###Nazwa fontu
+
+    font = pygame.font.Font('FR.ttf', 29)
+    text_Tytul1= font.render("Avengers", True, (255, 255, 255))
+    text1 = font.render("Ilość mrugnięć:", True, (255, 255, 255))
+    text2 = font.render("Runda ", True, (255, 255, 255))
+    text3 = font.render("Czas w rundzie", True, (255, 255, 255))
+
     running = True
     clock = pygame.time.Clock()
     #lista muzyki do plakatu avengersów
@@ -39,7 +53,7 @@ def main():
     START = False
 
     while running:
-
+        #Zdarzenia
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -55,12 +69,17 @@ def main():
             #wypełniamy okno kolorami i obrazkami poniżej
 
             if START:
-                screen.blit(get_image('avengers.jpg'),(100,30))
+                screen.blit(get_image("interfejs.jpg"),(0,0))
+                screen.blit(text_Tytul1, (250,58)) ###Tytuł
+                screen.blit(get_image('avenwym.jpg'),(231,145))
+                screen.blit(text1, (725,92)) ###Prawy górny
+                screen.blit(text2, (725,255)) ###Prawy środkowy
+                screen.blit(text3, (725,410)) ### Prawy dolny
                 pygame.display.flip()
                 if pygame.mixer.music.get_busy() == False:
                     pygame.time.wait(3000)
                     pygame.mixer.music.play(1)
-
+            pygame.display.update()
             if not START:
                     pygame.display.flip()
 if __name__=="__main__":
