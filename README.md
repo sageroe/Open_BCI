@@ -1,1 +1,1 @@
-# KCK---projekt-2
+# Open_BCI
