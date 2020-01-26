@@ -106,6 +106,11 @@ def main():
     #lista muzyki do plakatu avengersów
     _songs_avengers = ['avengers']
     pg.mixer.music.load(os.path.join('Muzyka/Avengers', 'avengers.mp3'))
+    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '1.mp3'))
+    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '2.mp3'))
+    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '1.mp3'))
+    pg.mixer.music.queue(os.path.join('Muzyka/Czas Apokalipsy', '1.mp3'))
+
 
 
     _currently_playing_song = None
@@ -127,11 +132,14 @@ def main():
     interfejs_interfejs=pg.image.load(os.path.join('img/Interfejs', 'interfejs.jpg'))
     interfejs_start=pg.image.load(os.path.join('img/Interfejs','start.jpg'))
     interfejs_tlo=pg.image.load(os.path.join('img/Interfejs','tlo.jpg'))
+    plakat = avengers_plakat
 
 
     START = False
     mrugniecia=0
     musictime=5
+    score = 0
+    turn = 1
     while running:
         #Zdarzenia
         for event in pg.event.get():
@@ -140,6 +148,7 @@ def main():
             #poniższy kod wykona się kiedy wciśniemy SPACE
             elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                      START = True
+                     time_0 = pg.time.get_ticks()
             #kod poniżej wykona się kiedy dojdzie do zakończenia odtwarzania dźwięku
             screen.fill((255,255,255))
             if event.type == SONG_END:
@@ -150,17 +159,33 @@ def main():
 
             if START:
                 ###RUNDA PIERWSZA
-                text_Tytul1= font.render("Avengers", True, (255, 255, 255))
-                text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
-                text3 = font.render("Punkty=0", True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                print(time_0)
+                if turn == 1 :
+                    text_Tytul1= font.render("Avengers", True, (255, 255, 255))
+                    text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
+                    text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                    text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                    time_1 = pg.time.get_ticks()
+                    print(time_1)
+                    if time_1 - time_0 > 18000:
+                        turn = 2
+
+
+                if turn == 2:
+                    text_Tytul1= font.render("Czas Apokalipsy", True, (255, 255, 255))
+                    text2 = font.render("Runda 2/5 ", True, (255, 255, 255))
+                    text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                    text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                    plakat = apocalypsenow_plakat
+                    pg.display.flip()
                 if blink.value == 1:
                     print('BLINK')
                     blink.value = 0
                     mrugniecia=mrugniecia+1
+                    pg.display.flip()
                 screen.blit(interfejs_interfejs,(0,0))
                 screen.blit(text_Tytul1, (250,58)) ###Tytuł
-                screen.blit(avengers_plakat,(231,145))
+                screen.blit(plakat,(231,145))
                 screen.blit(text1, (725,92)) ###Prawy górny
                 screen.blit(text2, (725,255)) ###Prawy środkowy
                 screen.blit(text3, (725,410)) ### Prawy dolny
@@ -170,7 +195,7 @@ def main():
                 if pg.mixer.music.get_busy() == False:
                     pg.time.wait(3000)
                     pg.mixer.music.play(1)
-            pg.display.update()
+            pg.display.flip()
             if not START:
                     screen.blit(interfejs_start,(0,0))
                     pg.display.flip()
