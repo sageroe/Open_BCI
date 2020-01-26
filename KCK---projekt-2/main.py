@@ -121,20 +121,21 @@ def main():
     #Ładujemy wszystkie niespędne pliki z muzyką poniżej. Za żadne skarby nie rób tego w pętli
     ###Lista wszystkich wczytanych grafik
         ### GRAFIKA REZULTATU
-    fail_image = pg.image.load(os.path.join('img/Wynik', 'failed.jpg'))
+    fail_image = pg.image.load(os.path.join('img/Wynik', 'failed.jpg')).convert()
         ### WSZYSTKIE PLAKATY
-    avengers_plakat=pg.image.load(os.path.join('img/Plakaty', 'ave.jpg'))
-    donnie_plakat=pg.image.load(os.path.join('img/Plakaty', 'don.jpg'))
-    fightclub_plakat=pg.image.load(os.path.join('img/Plakaty', 'fc.jpg'))
-    apocalypsenow_plakat=pg.image.load(os.path.join('img/Plakaty', 'apo.jpg'))
-    scarface_plakat=pg.image.load(os.path.join('img/Plakaty', 'sc.jpg'))
+    avengers_plakat=pg.image.load(os.path.join('img/Plakaty', 'ave.jpg')).convert()
+    donnie_plakat=pg.image.load(os.path.join('img/Plakaty', 'don.jpg')).convert()
+    fightclub_plakat=pg.image.load(os.path.join('img/Plakaty', 'fc.jpg')).convert()
+    apocalypsenow_plakat=pg.image.load(os.path.join('img/Plakaty', 'apo.jpg')).convert()
+    scarface_plakat=pg.image.load(os.path.join('img/Plakaty', 'sc.jpg')).convert()
         ###CAŁY INTERFEJS
-    interfejs_interfejs=pg.image.load(os.path.join('img/Interfejs', 'interfejs.jpg'))
-    interfejs_start=pg.image.load(os.path.join('img/Interfejs','start.jpg'))
-    interfejs_tlo=pg.image.load(os.path.join('img/Interfejs','tlo.jpg'))
+    interfejs_interfejs=pg.image.load(os.path.join('img/Interfejs', 'interfejs.jpg')).convert()
+    interfejs_start=pg.image.load(os.path.join('img/Interfejs','start.jpg')).convert()
+    interfejs_tlo=pg.image.load(os.path.join('img/Interfejs','tlo.jpg')).convert()
     plakat = avengers_plakat
 
-
+    mrug=[0,0,0]
+    warden = 0
     START = False
     mrugniecia=0
     musictime=5
@@ -145,6 +146,10 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+                sys.exit()
+            elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+                running = False
+                sys.exit()
             #poniższy kod wykona się kiedy wciśniemy SPACE
             elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                      START = True
@@ -157,48 +162,88 @@ def main():
                 screen.blit(fail_image,(10,30))
             #wypełniamy okno kolorami i obrazkami poniżej
 
-            if START:
-                ###RUNDA PIERWSZA
-                print(time_0)
-                if turn == 1 :
-                    text_Tytul1= font.render("Avengers", True, (255, 255, 255))
-                    text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
-                    text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                    text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
-                    time_1 = pg.time.get_ticks()
-                    print(time_1)
-                    if time_1 - time_0 > 18000:
-                        turn = 2
+        if START:
+            ###RUNDA PIERWSZA
+            print(time_0)
+            if turn == 1 :
+                text_Tytul1= font.render("Avengers", True, (255, 255, 255))
+                text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                time_1 = pg.time.get_ticks()
+                print(time_1)
+                if time_1 - time_0 > 18000:
+                    turn = 2
 
 
-                if turn == 2:
-                    text_Tytul1= font.render("Czas Apokalipsy", True, (255, 255, 255))
-                    text2 = font.render("Runda 2/5 ", True, (255, 255, 255))
-                    text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                    text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
-                    plakat = apocalypsenow_plakat
-                    pg.display.flip()
-                if blink.value == 1:
-                    print('BLINK')
-                    blink.value = 0
-                    mrugniecia=mrugniecia+1
-                    pg.display.flip()
-                screen.blit(interfejs_interfejs,(0,0))
-                screen.blit(text_Tytul1, (250,58)) ###Tytuł
-                screen.blit(plakat,(231,145))
-                screen.blit(text1, (725,92)) ###Prawy górny
-                screen.blit(text2, (725,255)) ###Prawy środkowy
-                screen.blit(text3, (725,410)) ### Prawy dolny
-                pg.display.flip()
+            if turn == 2:
+                text_Tytul1= font.render("Czas Apokalipsy", True, (255, 255, 255))
+                text2 = font.render("Runda 2/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = apocalypsenow_plakat
+                time_2 = pg.time.get_ticks()
+                if time_2 - time_1 > 15000:
+                    turn = 3
+            if turn == 3:
+                text_Tytul1= font.render("Fight Club", True, (255, 255, 255))
+                text2 = font.render("Runda 3/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = fightclub_plakat
+                time_3 = pg.time.get_ticks()
+                if time_3 - time_0 > 63000:
+                    turn = 4
+            if turn == 4:
+                text_Tytul1= font.render("Donnie Darco", True, (255, 255, 255))
+                text2 = font.render("Runda 4/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = donnie_plakat
+                time_4 = pg.time.get_ticks()
+                if time_4 - time_0 > 78000:
+                    turn = 5
+            if turn == 5:
+                text_Tytul1= font.render("Scarface", True, (255, 255, 255))
+                text2 = font.render("Runda 5/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = scarface_plakat
+                time_5 = pg.time.get_ticks()
+                if time_5 - time_0 > 93000:
+                    turn = 0
+
+            if turn == 0:
+                #JAKIEŚ THX FOR THE GAME, ZDOBYTE PUNKTY, GRATULACJE
+                pass
+
+            if blink.value == 1:
+                print('BLINK')
+                blink.value = 0
+                mrugniecia=mrugniecia+1
+
+                mrug[2] = mrug[1]
+                mrug[1]=mrug[0]
+                mrug[0] = pg.time.get_ticks()
+                if mrug[0]-mrug[2] < 3000 and time_1-time_0<5000:
+                    score = score +1
+
+            screen.blit(interfejs_interfejs,(0,0))
+            screen.blit(text_Tytul1, (250,58)) ###Tytuł
+            screen.blit(plakat,(231,145))
+            screen.blit(text1, (725,92)) ###Prawy górny
+            screen.blit(text2, (725,255)) ###Prawy środkowy
+            screen.blit(text3, (725,410)) ### Prawy dolny
+            pg.display.update()
  ### and drugi warunek poprawna muzyka i plakat
                     ###RUNDA DRUGA
-                if pg.mixer.music.get_busy() == False:
-                    pg.time.wait(3000)
-                    pg.mixer.music.play(1)
-            pg.display.flip()
-            if not START:
-                    screen.blit(interfejs_start,(0,0))
-                    pg.display.flip()
+            if pg.mixer.music.get_busy() == False:
+                pg.time.wait(3000)
+                pg.mixer.music.play(1)
+        if not START:
+                screen.blit(interfejs_start,(0,0))
+                pg.display.update()
+    print(time_0,time_1)
 if __name__=="__main__":
     main()
 
