@@ -95,12 +95,17 @@ def get_image(path):
         return image
 
 
+
 def main():
 
-    screen = pg.display.set_mode((1000,640))
-    ###Nazwa fontu
 
+    ###Nazwa fontu
+    screen = pg.display.set_mode((1000,640))
+    icon =  pg.image.load(os.path.join('img/Interfejs', 'icon.png')).convert()
+    pg.display.set_icon(icon)
+    pg.display.set_caption('Soundtracker')
     font = pg.font.Font(os.path.join('other','FR.ttf'), 29)
+    font2 = pg.font.Font(os.path.join('other','FR.ttf'), 45)
     running = True
     clock = pg.time.Clock()
 
@@ -133,7 +138,7 @@ def main():
     plakat = avengers_plakat
 
     mrug=[0,0,0]
-    warden = [0,0,0,0,0]
+    warden = [0,0,0,0,0,0]
     START = False
     mrugniecia=0
     musictime=5
@@ -158,14 +163,14 @@ def main():
 
         if START:
             ###RUNDA PIERWSZA
-            print(time_0)
+
             if turn == 1 :
                 text_Tytul1= font.render("Avengers", True, (255, 255, 255))
                 text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
                 text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                text1= font.render("Mrugniecia: "+str(mrugniecia), True, (255, 255, 255))
                 time_1 = pg.time.get_ticks()
-                print(time_1)
+
                 if time_1 - time_0 > (3000+15900):
                     turn = 2
 
@@ -174,7 +179,7 @@ def main():
                 text_Tytul1= font.render("Czas Apokalipsy", True, (255, 255, 255))
                 text2 = font.render("Runda 2/5 ", True, (255, 255, 255))
                 text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                text1= font.render("Mrugniecia: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = apocalypsenow_plakat
                 time_2 = pg.time.get_ticks()
                 if time_2 - time_0 > (3000+32300):
@@ -183,7 +188,7 @@ def main():
                 text_Tytul1= font.render("Fight Club", True, (255, 255, 255))
                 text2 = font.render("Runda 3/5 ", True, (255, 255, 255))
                 text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                text1= font.render("Mrugniecia: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = fightclub_plakat
                 time_3 = pg.time.get_ticks()
                 if time_3 - time_0 > (3000+49400):
@@ -192,7 +197,7 @@ def main():
                 text_Tytul1= font.render("Donnie Darco", True, (255, 255, 255))
                 text2 = font.render("Runda 4/5 ", True, (255, 255, 255))
                 text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                text1= font.render("Mrugniecia: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = donnie_plakat
                 time_4 = pg.time.get_ticks()
                 if time_4 - time_0 > (3000 + 64800):
@@ -201,7 +206,7 @@ def main():
                 text_Tytul1= font.render("Scarface", True, (255, 255, 255))
                 text2 = font.render("Runda 5/5 ", True, (255, 255, 255))
                 text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
-                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                text1= font.render("Mrugniecia: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = scarface_plakat
                 time_5 = pg.time.get_ticks()
                 if time_5 - time_0 > (3000+81200):
@@ -209,7 +214,11 @@ def main():
 
 
             if turn == 0:
-                pass
+                screen.blit(interfejs_koniec,(0,0))
+                wynik=font2.render(str(score), True, (255, 255, 255))
+                screen.blit(wynik, (508,203))
+
+
 
             if blink.value == 1:
                 print('BLINK')
@@ -253,7 +262,6 @@ def main():
                 pg.display.flip()
 
 
-    print(time_0,time_1)
 if __name__=="__main__":
     main()
 
