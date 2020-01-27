@@ -3,6 +3,7 @@
 import multiprocessing as mp
 import pygame as pg
 import os
+import sys
 import pandas as pd
 import filterlib as flt
 import blink as blk
@@ -103,11 +104,10 @@ def main():
     running = True
     clock = pg.time.Clock()
 
+
     #lista muzyki do plakatu avengersów
     _songs_avengers = ['avengers']
     pg.mixer.music.load(os.path.join('Muzyka', 'Soundtrack.mp3'))
-
-
 
 
     _currently_playing_song = None
@@ -177,7 +177,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = apocalypsenow_plakat
                 time_2 = pg.time.get_ticks()
-                if time_2 - time_0 > (3000+32000):
+                if time_2 - time_0 > (3000+32300):
                     turn = 3
             if turn == 3:
                 text_Tytul1= font.render("Fight Club", True, (255, 255, 255))
@@ -209,7 +209,7 @@ def main():
 
 
             if turn == 0:
-                screen.blit(interfejs_koniec,(0,0))
+                pass
 
             if blink.value == 1:
                 print('BLINK')
@@ -220,7 +220,7 @@ def main():
                 mrug[1]=mrug[0]
                 mrug[0] = pg.time.get_ticks()
                 if mrug[0]-mrug[2] < 3000:
-                    ###Po dodaniu poniższych warunków gra się zawiesza w okolicy 3 tury
+                    ###Po dodaniu poniższychcd warunków gra się zawiesza w okolicy 3 tury
                     if (15900 + 3000) > mrug[2] - time_0 >(10900+3000) and warden[0] == 0:
                         score = score +1
                         warden[0] = 1
@@ -242,15 +242,17 @@ def main():
             screen.blit(text1, (725,92)) ###Prawy górny
             screen.blit(text2, (725,255)) ###Prawy środkowy
             screen.blit(text3, (725,410)) ### Prawy dolny
-            pg.display.update()
+            pg.display.flip()
  ### and drugi warunek poprawna muzyka i plakat
                     ###RUNDA DRUGA
             if pg.mixer.music.get_busy() == False:
                 pg.time.wait(3000)
-                pg.mixer.music.play(1)
+                pg.mixer.music.play(0)
         if not START:
                 screen.blit(interfejs_start,(0,0))
-                pg.display.update()
+                pg.display.flip()
+
+
     print(time_0,time_1)
 if __name__=="__main__":
     main()
