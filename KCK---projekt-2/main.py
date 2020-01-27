@@ -149,7 +149,8 @@ def main():
                 sys.exit()
             elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
                 running = False
-                sys.exit()
+                quit_program.set()
+                sys.exit(0)
             #poniższy kod wykona się kiedy wciśniemy SPACE
             elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                      START = True
