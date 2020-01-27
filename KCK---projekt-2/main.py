@@ -132,7 +132,7 @@ def main():
     plakat = avengers_plakat
 
     mrug=[0,0,0]
-    gotpoint = [0,0,0,0,0]
+    warden = [0,0,0,0,0]
     START = False
     mrugniecia=0
     musictime=5
