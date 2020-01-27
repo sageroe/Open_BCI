@@ -1,19 +1,87 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jan  8 17:51:20 2020
 
-@author: Sagerran and 1998krzysiek
-"""
-
-####Ważne !!! Wymiary obrazka muszą być 300x400
-###Początek wymiaru plakatu 231x145
-###Prawy górny 725x92
-###Środkowy prawy 725x255
-###Dolny prawy 725x410
-### Tytuł 250x58
-import pygame
+import multiprocessing as mp
+import pygame as pg
 import os
-pygame.init() ###Przenioslem bo powinno się tutaj znajdować
+import pandas as pd
+import filterlib as flt
+import blink as blk
+#from pyOpenBCI import OpenBCIGanglion
+
+
+def blinks_detector(quit_program, blink_det, blinks_num, blink,):
+    def detect_blinks(sample):
+        if SYMULACJA_SYGNALU:
+            smp_flted = sample
+        else:
+            smp = sample.channels_data[0]
+            smp_flted = frt.filterIIR(smp, 0)
+        #print(smp_flted)
+
+        brt.blink_detect(smp_flted, -38000)
+        if brt.new_blink:
+            if brt.blinks_num == 1:
+                #connected.set()
+                print('CONNECTED. Speller starts detecting blinks.')
+            else:
+                blink_det.put(brt.blinks_num)
+                blinks_num.value = brt.blinks_num
+                blink.value = 1
+
+        if quit_program.is_set():
+            if not SYMULACJA_SYGNALU:
+                print('Disconnect signal sent...')
+                board.stop_stream()
+
+
+####################################################
+    SYMULACJA_SYGNALU = True
+####################################################
+    mac_adress = 'd2:b4:11:81:48:ad'
+####################################################
+
+    clock = pg.time.Clock()
+    frt = flt.FltRealTime()
+    brt = blk.BlinkRealTime()
+
+    if SYMULACJA_SYGNALU:
+        df = pd.read_csv('dane_do_symulacji/data.csv')
+        for sample in df['signal']:
+            if quit_program.is_set():
+                break
+            detect_blinks(sample)
+            clock.tick(200)
+        print('KONIEC SYGNAŁU')
+        quit_program.set()
+    else:
+        board = OpenBCIGanglion(mac=mac_adress)
+        board.start_stream(detect_blinks)
+
+if __name__ == "__main__":
+
+
+    blink_det = mp.Queue()
+    blink = mp.Value('i', 0)
+    blinks_num = mp.Value('i', 0)
+    #connected = mp.Event()
+    quit_program = mp.Event()
+
+    proc_blink_det = mp.Process(
+        name='proc_',
+        target=blinks_detector,
+        args=(quit_program, blink_det, blinks_num, blink,)
+        )
+
+    # rozpoczęcie podprocesu
+    proc_blink_det.start()
+    print('subprocess started')
+
+    ############################################
+    # Poniżej należy dodać rozwinięcie programu
+    ############################################
+
+
+pg.init() ###Przenioslem bo powinno się tutaj znajdować
 
 _image_library = {}
 def get_image(path):
@@ -21,88 +89,172 @@ def get_image(path):
         image = _image_library.get(path)
         if image == None:
                 canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-                image = pygame.image.load(canonicalized_path).convert()
+                image = pg.image.load(canonicalized_path).convert()
                 _image_library[path] = image
         return image
 
 
 def main():
 
-    screen = pygame.display.set_mode((1000,640))
+    screen = pg.display.set_mode((1000,640))
     ###Nazwa fontu
 
-    font = pygame.font.Font(os.path.join('other','FR.ttf'), 29)
+    font = pg.font.Font(os.path.join('other','FR.ttf'), 29)
     running = True
-    clock = pygame.time.Clock()
+    clock = pg.time.Clock()
 
     #lista muzyki do plakatu avengersów
     _songs_avengers = ['avengers']
-    pygame.mixer.music.load(os.path.join('Muzyka/Avengers', 'avengers.mp3'))
+    pg.mixer.music.load(os.path.join('Muzyka', 'Soundtrack.mp3'))
+
+
 
 
     _currently_playing_song = None
     #ustalamy zdarzenie które ma zakończyć granie muzyki
-    SONG_END = pygame.USEREVENT + 1
+    SONG_END = pg.USEREVENT + 1
 
-    pygame.mixer.music.set_endevent(SONG_END)
+    pg.mixer.music.set_endevent(SONG_END)
     #Ładujemy wszystkie niespędne pliki z muzyką poniżej. Za żadne skarby nie rób tego w pętli
     ###Lista wszystkich wczytanych grafik
         ### GRAFIKA REZULTATU
-    fail_image = pygame.image.load(os.path.join('img/Wynik', 'failed.jpg'))
+
         ### WSZYSTKIE PLAKATY
-    avengers_plakat=pygame.image.load(os.path.join('img/Plakaty', 'ave.jpg'))
-    donnie_plakat=pygame.image.load(os.path.join('img/Plakaty', 'don.jpg'))
-    fightclub_plakat=pygame.image.load(os.path.join('img/Plakaty', 'fc.jpg'))
-    apocalypsenow_plakat=pygame.image.load(os.path.join('img/Plakaty', 'apo.jpg'))
-    scarface_plakat=pygame.image.load(os.path.join('img/Plakaty', 'sc.jpg'))
+    avengers_plakat=pg.image.load(os.path.join('img/Plakaty', 'ave.jpg')).convert()
+    donnie_plakat=pg.image.load(os.path.join('img/Plakaty', 'don.jpg')).convert()
+    fightclub_plakat=pg.image.load(os.path.join('img/Plakaty', 'fc.jpg')).convert()
+    apocalypsenow_plakat=pg.image.load(os.path.join('img/Plakaty', 'apo.jpg')).convert()
+    scarface_plakat=pg.image.load(os.path.join('img/Plakaty', 'sc.jpg')).convert()
         ###CAŁY INTERFEJS
-    interfejs_interfejs=pygame.image.load(os.path.join('img/Interfejs', 'interfejs.jpg'))
-    interfejs_start=pygame.image.load(os.path.join('img/Interfejs','start.jpg'))
-    interfejs_tlo=pygame.image.load(os.path.join('img/Interfejs','tlo.jpg'))
+    interfejs_interfejs=pg.image.load(os.path.join('img/Interfejs', 'interfejs.jpg')).convert()
+    interfejs_start=pg.image.load(os.path.join('img/Interfejs','start.jpg')).convert()
+    interfejs_tlo=pg.image.load(os.path.join('img/Interfejs','tlo.jpg')).convert()
+    interfejs_koniec=pg.image.load(os.path.join('img/Interfejs','koniec.jpg')).convert()
+    plakat = avengers_plakat
 
-
+    mrug=[0,0,0]
+    warden = [0,0,0,0,0]
     START = False
     mrugniecia=0
     musictime=5
+    score = 0
+    turn = 1
     while running:
         #Zdarzenia
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 running = False
+            elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+                running = False
+                quit_program.set()
+                sys.exit(0)
             #poniższy kod wykona się kiedy wciśniemy SPACE
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                      START = True
+                     time_0 = pg.time.get_ticks()
             #kod poniżej wykona się kiedy dojdzie do zakończenia odtwarzania dźwięku
             screen.fill((255,255,255))
-            if event.type == SONG_END:
-                START = False
-                print("Na na na na koniec piosenki")
-                screen.blit(fail_image,(10,30))
             #wypełniamy okno kolorami i obrazkami poniżej
 
-            if START:
-                ###RUNDA PIERWSZA
+        if START:
+            ###RUNDA PIERWSZA
+            print(time_0)
+            if turn == 1 :
                 text_Tytul1= font.render("Avengers", True, (255, 255, 255))
                 text2 = font.render("Runda 1/5 ", True, (255, 255, 255))
-                text3 = font.render("Punkty=0", True, (255, 255, 255))
-                text1= font.render("Ilość mrugnięć: "+str(mrugniecia), True, (255, 255, 255))
-                if event.type ==pygame.KEYDOWN and event.key == pygame.K_d: ###POTENCJALNIE BD NAM LICZYŁO MRUGNIĘCIA
-                    mrugniecia=mrugniecia+1
-                screen.blit(interfejs_interfejs,(0,0))
-                screen.blit(text_Tytul1, (250,58)) ###Tytuł
-                screen.blit(avengers_plakat,(231,145))
-                screen.blit(text1, (725,92)) ###Prawy górny
-                screen.blit(text2, (725,255)) ###Prawy środkowy
-                screen.blit(text3, (725,410)) ### Prawy dolny
-                pygame.display.flip()
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                time_1 = pg.time.get_ticks()
+                print(time_1)
+                if time_1 - time_0 > (3000+15900):
+                    turn = 2
+
+
+            if turn == 2:
+                text_Tytul1= font.render("Czas Apokalipsy", True, (255, 255, 255))
+                text2 = font.render("Runda 2/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = apocalypsenow_plakat
+                time_2 = pg.time.get_ticks()
+                if time_2 - time_0 > (3000+32000):
+                    turn = 3
+            if turn == 3:
+                text_Tytul1= font.render("Fight Club", True, (255, 255, 255))
+                text2 = font.render("Runda 3/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = fightclub_plakat
+                time_3 = pg.time.get_ticks()
+                if time_3 - time_0 > (3000+49400):
+                    turn = 4
+            if turn == 4:
+                text_Tytul1= font.render("Donnie Darco", True, (255, 255, 255))
+                text2 = font.render("Runda 4/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = donnie_plakat
+                time_4 = pg.time.get_ticks()
+                if time_4 - time_0 > (3000 + 64800):
+                    turn = 5
+            if turn == 5:
+                text_Tytul1= font.render("Scarface", True, (255, 255, 255))
+                text2 = font.render("Runda 5/5 ", True, (255, 255, 255))
+                text3 = font.render("Punkty:"+str(score), True, (255, 255, 255))
+                text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
+                plakat = scarface_plakat
+                time_5 = pg.time.get_ticks()
+                if time_5 - time_0 > (3000+81200):
+                    turn=0
+
+
+            if turn == 0:
+                screen.blit(interfejs_koniec,(0,0))
+
+            if blink.value == 1:
+                print('BLINK')
+                blink.value = 0
+                mrugniecia=mrugniecia+1
+
+                mrug[2] = mrug[1]
+                mrug[1]=mrug[0]
+                mrug[0] = pg.time.get_ticks()
+                if mrug[0]-mrug[2] < 3000:
+                    ###Po dodaniu poniższych warunków gra się zawiesza w okolicy 3 tury
+                    if (15900 + 3000) > mrug[2] - time_0 >(10900+3000) and warden[0] == 0:
+                        score = score +1
+                        warden[0] = 1
+                    if (27100 + 3000) > mrug[2] - time_0 >(22100+3000) and warden[1] == 0:
+                        score = score +1
+                        warden[1] = 1
+                    if (38000 + 3000) > mrug[2] - time_0 >(33000+3000) and warden[2] == 0:
+                        score = score +1
+                        warden[2] = 1
+                    if (59600 + 3000) > mrug[2] - time_0 >(54600+3000) and warden[3] == 0:
+                        score = score +1
+                        warden[3] = 1
+                    if (81200 + 3000) > mrug[2] - time_0 >(76200+3000) and warden[4] == 0:
+                        score = score +1
+                        warden[4] = 1
+            screen.blit(interfejs_interfejs,(0,0))
+            screen.blit(text_Tytul1, (250,58)) ###Tytuł
+            screen.blit(plakat,(231,145))
+            screen.blit(text1, (725,92)) ###Prawy górny
+            screen.blit(text2, (725,255)) ###Prawy środkowy
+            screen.blit(text3, (725,410)) ### Prawy dolny
+            pg.display.update()
  ### and drugi warunek poprawna muzyka i plakat
                     ###RUNDA DRUGA
-                if pygame.mixer.music.get_busy() == False:
-                    pygame.time.wait(3000)
-                    pygame.mixer.music.play(1)
-            pygame.display.update()
-            if not START:
-                    screen.blit(interfejs_start,(0,0))
-                    pygame.display.flip()
+            if pg.mixer.music.get_busy() == False:
+                pg.time.wait(3000)
+                pg.mixer.music.play(1)
+        if not START:
+                screen.blit(interfejs_start,(0,0))
+                pg.display.update()
+    print(time_0,time_1)
 if __name__=="__main__":
     main()
+
+
+# Zakończenie podprocesów
+    proc_blink_det.join()
