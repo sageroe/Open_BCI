@@ -1,0 +1,43 @@
+####Runda 1 Avengers
+
+500 ms --> Cisza
+500-5500 ms --> Pierwszy utwór Avengers
+5500-5700 ms -->cisza
+5700-10700 ms -->drugi utwór Avengers
+10900-15900ms --> trzeci utwór Avengers ###PRAWIDŁOWY
+
+15900--->W tym pomencie przejście do drugiej rundy
+
+###Runda 2 Czas Apokalipsy
+15900-16900ms --> przerwa między rundami
+16900-21900 ms --> pierwszy utwór Czas Apokalipsy
+21900- 22100 ms --> cisza
+22100-27100 ms --> drugi utwór Czas apokalispsy ###PRAWIDŁOWY
+27100-27300 ms -->cisza
+27300-32300 ms --->trzeci utwór Czas apokalipsy 
+32000 ---> W tym momencie przejscie do trzeciej rundy
+
+###Runda 3
+32300-33000 ms --->przerwa między rundami
+33000-38000 ms ---> Pierwszy utwór Fight Club ### Prawidłowy
+38000-38200 ms --->Cisza
+38200-43200 ms ---> drugi utwór Fight Club
+43200-43400 ms --> Cisza
+43400-48400 ms --->trzeci utwór Fight Club
+48400-49400 ms --->Cisza 
+49400--->koniec rundy 3
+###Runda 4
+49400-54400 ms ---> Pierwszy utwór Donnie Darko
+54400-54600 ms ---> Cisza
+54600-59600 ms ---> Drugi utór Donnie Darko ### PRAWIDŁOWY
+59600-59800 ms ---> Cisza
+59800-64800 ms --->Trzeci utwór
+64800 ---> moment przejścia do piątej rundy
+
+###Runda 5
+64800-65800 ---> Przerwa między rundami
+65800-70800 ---> Pierwszy utwór Scarface
+70800-71000 ---> Cisza
+71000-76000 --->Drugi utwór Scarface
+76000-76200 --->Cisza
+76200-81200 --->Trzeci utwór Scarface ###PRAWIDŁOWY
