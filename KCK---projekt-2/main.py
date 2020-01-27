@@ -105,11 +105,8 @@ def main():
 
     #lista muzyki do plakatu avengersów
     _songs_avengers = ['avengers']
-    pg.mixer.music.load(os.path.join('Muzyka/Avengers', 'avengers.mp3'))
-    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '1.mp3'))
-    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '2.mp3'))
-    pg.mixer.music.queue(os.path.join('Muzyka/Avengers', '1.mp3'))
-    pg.mixer.music.queue(os.path.join('Muzyka/Czas Apokalipsy', '1.mp3'))
+    pg.mixer.music.load(os.path.join('F:\Dokumenty\Studia\Kognitywistyka\KCK\gra\Open_BCI\Muzyka', 'Soundtrack.mp3'))
+
 
 
 
@@ -135,7 +132,7 @@ def main():
     plakat = avengers_plakat
 
     mrug=[0,0,0]
-    warden = 0
+    gotpoint = [0,0,0,0,0]
     START = False
     mrugniecia=0
     musictime=5
@@ -172,7 +169,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 time_1 = pg.time.get_ticks()
                 print(time_1)
-                if time_1 - time_0 > 18000:
+                if time_1 - time_0 > (3000+15900):
                     turn = 2
 
 
@@ -183,7 +180,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = apocalypsenow_plakat
                 time_2 = pg.time.get_ticks()
-                if time_2 - time_1 > 15000:
+                if time_2 - time_0 > (3000+32000):
                     turn = 3
             if turn == 3:
                 text_Tytul1= font.render("Fight Club", True, (255, 255, 255))
@@ -192,7 +189,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = fightclub_plakat
                 time_3 = pg.time.get_ticks()
-                if time_3 - time_0 > 63000:
+                if time_3 - time_0 > (3000+49400):
                     turn = 4
             if turn == 4:
                 text_Tytul1= font.render("Donnie Darco", True, (255, 255, 255))
@@ -201,7 +198,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = donnie_plakat
                 time_4 = pg.time.get_ticks()
-                if time_4 - time_0 > 78000:
+                if time_4 - time_0 > (3000 + 64800):
                     turn = 5
             if turn == 5:
                 text_Tytul1= font.render("Scarface", True, (255, 255, 255))
@@ -210,8 +207,7 @@ def main():
                 text1= font.render("Ilosc mrugniec: "+str(mrugniecia), True, (255, 255, 255))
                 plakat = scarface_plakat
                 time_5 = pg.time.get_ticks()
-                if time_5 - time_0 > 93000:
-                    turn = 0
+
 
             if turn == 0:
                 #JAKIEŚ THX FOR THE GAME, ZDOBYTE PUNKTY, GRATULACJE
@@ -225,9 +221,23 @@ def main():
                 mrug[2] = mrug[1]
                 mrug[1]=mrug[0]
                 mrug[0] = pg.time.get_ticks()
-                if mrug[0]-mrug[2] < 3000 and time_1-time_0<5000:
-                    score = score +1
-
+                if mrug[0]-mrug[2] < 3000:
+                    ###Po dodaniu poniższych warunków gra się zawiesza w okolicy 3 tury
+                    if (15900 + 3000) > mrug[2] - time_0 >(10900+3000) and warden[0] == 0:
+                        score = score +1
+                        warden[0] = 1
+                    if (27100 + 3000) > mrug[2] - time_0 >(22100+3000) and warden[1] == 0:
+                        score = score +1
+                        warden[1] = 1
+                    if (38000 + 3000) > mrug[2] - time_0 >(33000+3000) and warden[2] == 0:
+                        score = score +1
+                        warden[2] = 1
+                    if (59600 + 3000) > mrug[2] - time_0 >(54600+3000) and warden[3] == 0:
+                        score = score +1
+                        warden[3] = 1
+                    if (81200 + 3000) > mrug[2] - time_0 >(76200+3000) and warden[4] == 0:
+                        score = score +1
+                        warden[4] = 1
             screen.blit(interfejs_interfejs,(0,0))
             screen.blit(text_Tytul1, (250,58)) ###Tytuł
             screen.blit(plakat,(231,145))
