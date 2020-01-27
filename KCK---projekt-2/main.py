@@ -146,7 +146,6 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
-                sys.exit()
             elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
                 running = False
                 quit_program.set()
