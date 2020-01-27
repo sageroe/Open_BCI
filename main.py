@@ -213,10 +213,7 @@ def main():
                     turn=0
 
 
-            if turn == 0:
-                screen.blit(interfejs_koniec,(0,0))
-                wynik=font2.render(str(score), True, (255, 255, 255))
-                screen.blit(wynik, (508,203))
+
 
 
 
@@ -245,19 +242,24 @@ def main():
                     if (81200 + 3000) > mrug[2] - time_0 >(76200+3000) and warden[4] == 0:
                         score = score +1
                         warden[4] = 1
+
             screen.blit(interfejs_interfejs,(0,0))
             screen.blit(text_Tytul1, (250,58)) ###Tytuł
             screen.blit(plakat,(231,145))
             screen.blit(text1, (725,92)) ###Prawy górny
             screen.blit(text2, (725,255)) ###Prawy środkowy
             screen.blit(text3, (725,410)) ### Prawy dolny
+            if turn == 0:
+                screen.blit(interfejs_koniec,(0,0))
+                wynik=font2.render(str(score), True, (255, 255, 255))
+                screen.blit(wynik, (508,203))
             pg.display.flip()
  ### and drugi warunek poprawna muzyka i plakat
                     ###RUNDA DRUGA
-            if pg.mixer.music.get_busy() == False:
+            if pg.mixer.music.get_busy() == False and turn == 1:
                 pg.time.wait(3000)
-                pg.mixer.music.play(0)
-        if not START:
+                pg.mixer.music.play(1)
+        if not START and turn == 1:
                 screen.blit(interfejs_start,(0,0))
                 pg.display.flip()
 
