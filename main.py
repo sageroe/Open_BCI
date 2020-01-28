@@ -7,7 +7,7 @@ import sys
 import pandas as pd
 import filterlib as flt
 import blink as blk
-#from pyOpenBCI import OpenBCIGanglion
+from pyOpenBCI import OpenBCIGanglion
 
 
 def blinks_detector(quit_program, blink_det, blinks_num, blink,):
@@ -36,7 +36,7 @@ def blinks_detector(quit_program, blink_det, blinks_num, blink,):
 
 
 ####################################################
-    SYMULACJA_SYGNALU = True
+    SYMULACJA_SYGNALU = False
 ####################################################
     mac_adress = 'd2:b4:11:81:48:ad'
 ####################################################
@@ -84,17 +84,6 @@ if __name__ == "__main__":
 
 pg.init() ###Przenioslem bo powinno się tutaj znajdować
 
-_image_library = {}
-def get_image(path):
-        global _image_library
-        image = _image_library.get(path)
-        if image == None:
-                canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-                image = pg.image.load(canonicalized_path).convert()
-                _image_library[path] = image
-        return image
-
-
 
 def main():
 
@@ -111,8 +100,8 @@ def main():
 
 
     #lista muzyki do plakatu avengersów
-    _songs_avengers = ['avengers']
-    pg.mixer.music.load(os.path.join('Muzyka', 'Soundtrack.mp3'))
+
+    pg.mixer.music.load(os.path.join('Muzyka', 'Soundtrack.wav'))
 
 
     _currently_playing_song = None
@@ -149,6 +138,8 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+                quit_program.set()
+                sys.exit(0)
             elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
                 running = False
                 quit_program.set()
